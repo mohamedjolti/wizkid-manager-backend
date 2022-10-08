@@ -144,4 +144,9 @@ class UserController extends Controller
             return response()->json("Enable to delete Wizkad", 401);
         }
     }
+
+    public function getUsersCompleteInformations(){
+        $users = User::all();
+        return response()->json($users->all(), 201);
+    }
 }

@@ -43,7 +43,7 @@ class WizkidTest extends TestCase
         $faker = Faker::create();
         $data = [
             'name' => $faker->sentence(),
-            'picture' => File::create("imageTestCreateWizkid.jpg", 200),
+            'picture' => File::create("imageTestUpdateWizkid.jpg", 200),
             'email' => $faker->email,
             'role' => $random_role,
             '_method' => 'PUT'
