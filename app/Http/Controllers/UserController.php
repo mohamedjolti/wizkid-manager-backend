@@ -191,4 +191,13 @@ class UserController extends Controller
             return response()->json("Wizkid is not fired yet !", 401);
         }
     }
+
+    public function filterByRoleForGuest (Request $request,$role){
+        $users = User::select("id", "name", "role", "picture")->where("role",$role)->get();
+        return response()->json($users, 201);
+    }
+    public function filterByRoleForUser (Request $request,$role){
+        $users = User::where("role",$role)->get();
+        return response()->json($users, 201);
+    }
 }
