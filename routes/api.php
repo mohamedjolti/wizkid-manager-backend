@@ -30,4 +30,6 @@ Route::post("login",[AuthController::class,"login"]);
 
 Route::group(['middleware' => 'auth:api'], function () {
   Route::get("/wizkid/list-full",[UserController::class,"getUsersCompleteInformations"]);
+  Route::get("/wizkid/fire/{id}",[UserController::class,"fire"]);
+  Route::get("/wizkid/unfire/{id}",[UserController::class,"unfire"]);
 });

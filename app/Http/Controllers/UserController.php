@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\FireMail;
+use App\Mail\unFireMail;
 use App\Models\User;
 use App\Services\FileService;
 use Illuminate\Http\Request;
@@ -11,6 +13,8 @@ use Illuminate\Support\Facades\Log;
 use Exception;
 use InvalidArgumentException;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+
 
 
 
@@ -129,7 +133,7 @@ class UserController extends Controller
 
     public function getUsers()
     {
-        $users = User::select("name", "role", "picture")->get();
+        $users = User::select("id","name", "role", "picture")->get();
         return response()->json($users->all(), 201);
     }
 
@@ -149,4 +153,43 @@ class UserController extends Controller
         $users = User::all();
         return response()->json($users->all(), 201);
     }
+    
+    public function fire($id){
+        if(auth()->user()->id == $id){
+            return response()->json("Sorry you can't fire yourself", 401);
+        }
+        $user=User::find($id);
+        if(!$user){
+            return response()->json("Wizkid not found", 401);
+        }
+        if($user->is_fired == 0){
+            $user->is_fired=1;
+            $user->save();
+            Mail::to($user->email)->queue(new FireMail());
+            return response()->json("Wizkid is fired", 200);
+        }else{
+            return response()->json("Wizkid is alredey fired", 401);
+
+        }
+    }
+
+    public function unfire($id){
+        if(auth()->user()->id == $id){
+            return response()->json("Sorry you can't unfire yourself", 401);
+        }
+        $user=User::find($id);
+        if(!$user){
+            return response()->json("Wizkid not found ", 401);
+        }
+        if($user->is_fired == 1){
+            $user->is_fired=0;
+            $user->save();
+            Mail::to($user->email)->queue(new unFireMail());
+            return response()->json("Wizkid is back", 200);
+        }else{
+            return response()->json("Wizkid is not fired yet !", 401);
+
+        }
+    }
+  
 }
